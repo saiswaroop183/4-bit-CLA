@@ -1,0 +1,46 @@
+* SPICE3 file created from ring_osc.ext - technology: scmos
+.include TSMC_180nm.txt
+.param SUPPLY = 1.8
+.param LAMBDA = 0.18u
+.param width_N = {10*LAMBDA}
+.param width_P = {2.5*width_N}
+.global gnd vdd
+
+
+VDS vdd gnd 'SUPPLY'
+.option scale=0.09u
+
+M1000 b a vdd vdd CMOSP w=6 l=2
++  ad=30 pd=22 as=150 ps=110
+M1001 c b vdd vdd CMOSP w=6 l=2
++  ad=30 pd=22 as=0 ps=0
+M1002 d c vdd vdd CMOSP w=6 l=2
++  ad=30 pd=22 as=0 ps=0
+M1003 e d vdd vdd CMOSP w=6 l=2
++  ad=30 pd=22 as=0 ps=0
+M1004 a e vdd vdd CMOSP w=6 l=2
++  ad=30 pd=22 as=0 ps=0
+M1005 b a gnd gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=100 ps=90
+M1006 c b gnd gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+M1007 d c gnd gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+M1008 e d gnd gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+M1009 a e gnd gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+C0 a gnd 1.1fF
+C1 vdd gnd 2.1fF
+
+.tran 10p 5n
+.measure tran tdelay
++ TRIG v(a) VAL = 'SUPPLY/2'  RISE = 1
++ TARG v(a) VAL = 'SUPPLY/2' FALL = 1
+
+.control
+run
+plot v(a)
+
+.endc
+.end

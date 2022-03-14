@@ -1,0 +1,69 @@
+* SPICE3 file created from pg.ext - technology: scmos
+.include TSMC_180nm.txt
+.param SUPPLY = 1.8
+.param LAMBDA = 0.18u
+.param width_N = {10*LAMBDA}
+.param width_P = {2.5*width_N}
+.global gnd vdd
+
+VDS vdd gnd 'SUPPLY'
+vina a gnd pulse 0 1.8 0ns 10ps 10ps 10ns 20ns
+vinb b gnd pulse 0 1.8 0ns 10ps 10ps 20ns 40ns
+
+
+.option scale=0.09u
+
+M1000 vdd b a_n52_n43# vdd CMOSP w=8 l=2
++  ad=328 pd=146 as=40 ps=26
+M1001 a_n32_n43# a vdd vdd CMOSP w=8 l=2
++  ad=40 pd=26 as=0 ps=0
+M1002 a_n14_7# a_n32_n43# p vdd CMOSP w=8 l=2
++  ad=64 pd=32 as=80 ps=52
+M1003 vdd b a_n14_7# vdd CMOSP w=8 l=2
++  ad=0 pd=0 as=0 ps=0
+M1004 a_15_7# a_n52_n43# vdd vdd CMOSP w=8 l=2
++  ad=144 pd=52 as=0 ps=0
+M1005 p a a_15_7# vdd CMOSP w=8 l=2
++  ad=0 pd=0 as=0 ps=0
+M1006 a_52_n50# b vdd vdd CMOSP w=8 l=2
++  ad=64 pd=32 as=0 ps=0
+M1007 vdd a a_52_n50# vdd CMOSP w=8 l=2
++  ad=0 pd=0 as=0 ps=0
+M1008 g a_52_n50# vdd vdd CMOSP w=8 l=2
++  ad=40 pd=26 as=0 ps=0
+M1009 gnd b a_n52_n43# Gnd CMOSN w=4 l=2
++  ad=148 pd=98 as=20 ps=18
+M1010 a_n32_n43# a gnd Gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+M1011 p a_n32_n43# a_n21_n43# Gnd CMOSN w=4 l=2
++  ad=32 pd=24 as=108 ps=78
+M1012 a_n21_n43# b p Gnd CMOSN w=4 l=2
++  ad=0 pd=0 as=0 ps=0
+M1013 gnd a_n52_n43# a_n21_n43# Gnd CMOSN w=4 l=2
++  ad=0 pd=0 as=0 ps=0
+M1014 a_n21_n43# a gnd Gnd CMOSN w=4 l=2
++  ad=0 pd=0 as=0 ps=0
+M1015 a_59_n50# b a_52_n50# Gnd CMOSN w=4 l=2
++  ad=32 pd=24 as=20 ps=18
+M1016 gnd a a_59_n50# Gnd CMOSN w=4 l=2
++  ad=0 pd=0 as=0 ps=0
+M1017 g a_52_n50# gnd Gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+C0 a gnd 2.1fF
+C1 vdd gnd 4.0fF
+.tran 0.1n 200n
+.measure tran trise  TRIG v(g) VAL = 'SUPPLY/2' RISE =1    TARG v(a) VAL = 'SUPPLY/2' FALL =1
+
+.measure tran tfall  TRIG v(a) VAL = 'SUPPLY/2' RISE =1    TARG v(g) VAL = 'SUPPLY/2' FALL =1
+
+.measure tran tpd param = '(trise + tfall)/2' goal = 0
+
+.control
+run
+set curplottitle= "Abhinav_Siddharth_2020112007_5"
+plot  v(a) v(b)+2 v(g)+4 v(p)+6
+
+* hardcopy and.eps  v(g) v(a) v(b)
+.endc
+.end
+

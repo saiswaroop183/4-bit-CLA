@@ -1,0 +1,10 @@
+.include TSMC_180nm.txt
+.include "inv.spice"
+
+V1 vdd gnd 1.8
+V2 in gnd PULSE(1.8 0 0 50p 50p 1n 2n)
+
+.OPTIONS post probe
+.TRAN 10p 2n
+.PROBE TRAN V(in) V(out)
+.end

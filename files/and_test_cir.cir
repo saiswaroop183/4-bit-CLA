@@ -1,0 +1,58 @@
+.include TSMC_180nm.txt
+.param SUPPLY = 1.8
+.param LAMBDA = 0.18u
+.param width_N = {10*LAMBDA}
+.param width_P = {2.5*width_N}
+.global gnd vdd
+
+VDS vdd gnd 'SUPPLY'
+vina a gnd pulse 0 1.8 0ns 10ps 10ps 10ns 20ns
+vinb b gnd pulse 0 1.8 0ns 10ps 10ps 20ns 40ns
+
+.subckt AND g a b
+
+M3 c a vdd vdd CMOSP W={2*width_P} L={LAMBDA}
++ AS={5*width_P*LAMBDA/2} PS={10*LAMBDA/2+2*width_P}
++ AD={5*width_P*LAMBDA/2} PD={10*LAMBDA/2+2*width_P}
+
+M4 c b vdd vdd CMOSP W={2*width_P} L={LAMBDA}
++ AS={5*width_P*LAMBDA/2} PS={10*LAMBDA/2+2*width_P}
++ AD={5*width_P*LAMBDA/2} PD={10*LAMBDA/2+2*width_P}
+
+M1 c a d d CMOSN W={width_N} L={LAMBDA}
++ AS={5*width_N*LAMBDA/2} PS={10*LAMBDA/2+2*width_N}
++ AD={5*width_N*LAMBDA/2} PD={10*LAMBDA/2+2*width_N}
+
+M2 d b gnd gnd CMOSN W={width_N} L={LAMBDA}
++ AS={5*width_N*LAMBDA/2} PS={10*LAMBDA/2+2*width_N}
++ AD={5*width_N*LAMBDA/2} PD={10*LAMBDA/2+2*width_N}
+
+M5 g c vdd vdd CMOSP W={2*width_N} L={LAMBDA}
++ AS={5*width_N*LAMBDA/2} PS={10*LAMBDA/2+2*width_N}
++ AD={5*width_N*LAMBDA/2} PD={10*LAMBDA/2+2*width_N}
+
+M6 g c gnd gnd CMOSN W={width_N} L={LAMBDA}
++ AS={5*width_N*LAMBDA/2} PS={10*LAMBDA/2+2*width_N}
++ AD={5*width_N*LAMBDA/2} PD={10*LAMBDA/2+2*width_N}
+
+.ends AND
+
+X1 g a b AND
+
+Cout g gnd 100f
+
+.tran 0.1n 200n
+.measure tran trise  TRIG v(g) VAL = 'SUPPLY/2' RISE =1    TARG v(a) VAL = 'SUPPLY/2' FALL =1
+
+.measure tran tfall  TRIG v(a) VAL = 'SUPPLY/2' RISE =1    TARG v(g) VAL = 'SUPPLY/2' FALL =1
+
+.measure tran tpd param = '(trise + tfall)/2' goal = 0
+
+.control
+
+run
+plot  v(a) v(b)+2 v(g)+4
+
+* hardcopy and.eps  v(g) v(a) v(b)
+.endc
+.end

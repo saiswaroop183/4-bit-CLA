@@ -1,0 +1,11 @@
+Circuit: * SPICE3 file created from inv.ext - technology: scmos
+
+Error on line 3 : m1000 out in vdd w_n14_8# pfet w=6 l=2  ad=30 pd=22 as=30 ps=22
+	 Unable to find definition of model "l"
+	
+	* Error:  No unlabeled parameter permitted for MOSFET's
+Error on line 5 : m1001 out in gnd gnd nfet w=4 l=2  ad=20 pd=18 as=20 ps=18
+	 Unable to find definition of model "l"
+	
+	* Error:  No unlabeled parameter permitted for MOSFET's
+Fatal Error: .option syntax error, unrecognized option: "scale"

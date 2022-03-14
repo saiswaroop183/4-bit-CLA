@@ -1,0 +1,5 @@
+Questionable use of curly braces in ".measure tran tpd param = {(trise+tfall)/2} goal = 0"
+    Error: undefined symbol in: "([trise]+tfall)/2"
+Circuit: .include TSMC_180nm.txt
+
+Fatal Error: Run: Missing node(s).

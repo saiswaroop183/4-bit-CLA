@@ -1,0 +1,44 @@
+* SPICE3 file created from and.ext - technology: scmos
+.include TSMC_180nm.txt
+.param SUPPLY = 1.8
+.param LAMBDA = 0.18u
+.param width_N = {10*LAMBDA}
+.param width_P = {2.5*width_N}
+.global gnd vdd
+
+VDS vdd gnd 'SUPPLY'
+vina a gnd pulse 0 1.8 0ns 10ps 10ps 10ns 20ns
+vinb b gnd pulse 0 1.8 0ns 10ps 10ps 20ns 40ns
+.option scale=0.09u
+
+M1000 a_n21_n26# a vdd vdd CMOSP w=8 l=2
++  ad=64 pd=32 as=104 ps=58
+M1001 vdd b a_n21_n26# vdd CMOSP w=8 l=2
++  ad=0 pd=0 as=0 ps=0
+M1002 g a_n21_n26# vdd vdd CMOSP w=8 l=2
++  ad=40 pd=26 as=0 ps=0
+M1003 a_n14_n26# a a_n21_n26# gnd CMOSN w=4 l=2
++  ad=32 pd=24 as=20 ps=18
+M1004 gnd b a_n14_n26# gnd CMOSN w=4 l=2
++  ad=32 pd=24 as=0 ps=0
+M1005 g a_n21_n26# gnd gnd CMOSN w=4 l=2
++  ad=20 pd=18 as=0 ps=0
+C0 vdd gnd 1.2fF
+
+Cout g gnd 100f
+
+.tran 0.1n 200n
+.measure tran trise  TRIG v(g) VAL = 'SUPPLY/2' RISE =1    TARG v(a) VAL = 'SUPPLY/2' FALL =1
+
+.measure tran tfall  TRIG v(a) VAL = 'SUPPLY/2' RISE =1    TARG v(g) VAL = 'SUPPLY/2' FALL =1
+
+.measure tran tpd param = '(trise + tfall)/2' goal = 0
+
+.control
+
+run
+plot  v(a) v(b)+2 v(g)+4
+
+* hardcopy and.eps  v(g) v(a) v(b)
+.endc
+.end
